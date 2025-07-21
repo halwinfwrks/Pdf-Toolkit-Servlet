@@ -1,0 +1,92 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | PDF ToolKits</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script>
+        const usernames = [
+            <c:forEach var="username" items="${usernames}" varStatus="status">
+                "${username}"<c:if test="${!status.last}">,</c:if>
+            </c:forEach>
+        ];
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/base.css">
+    <script src="${pageContext.request.contextPath}/js/register.js" defer></script>
+</head>
+
+<body class="w-full min-h-screen flex bg-gray-100 font-sans">
+    <!-- Left panel -->
+    <div class="w-1/2 hidden lg:flex relative bg-cover bg-center"
+        style="background-image: url('${pageContext.request.contextPath}/images/bg-login.jpg');">
+
+        <!-- Fixed Logo -->
+        <a href="${pageContext.request.contextPath}/home" class="absolute bottom-6 left-6 flex items-center z-10">
+            <img src="${pageContext.request.contextPath}/images/logo-1-removebg.png" alt="Logo" class="w-8 h-8 drop-shadow-lg">
+            <span class="text-gray-200 font-bold text-xl ml-2 mt-1">PDF ToolKits</span>
+        </a>
+
+        <button id="back-btn" class="absolute top-6 left-6 flex items-center z-10">
+            <img src="${pageContext.request.contextPath}/images/back-icon.png" alt="Back" class="w-7 h-7 drop-shadow-lg">
+            <span class="text-gray-200 font-bold text-xl ml-2 mt-1.5">Home</span>
+        </button>
+
+        <div class="absolute inset-0 bg-black bg-opacity-40"></div>
+        <div class="relative z-10 max-w-lg ml-16 mt-[30%] mb-auto text-white">
+            <p class="text-lg text-gray-200 leading-relaxed">
+                Simplify your PDF management: merge, split, compress, convert, and protect with ease.
+            </p>
+            <a href="#" class="text-gray-200 underline hover:text-gray-300 transition-colors duration-200 font-medium">
+                Learn More
+            </a>
+        </div>
+    </div>
+
+    <!-- Right panel: Register form -->
+    <div class="relative w-full lg:w-1/2 bg-gray-50 flex flex-col justify-center items-center px-8 py-12 shadow-lg">
+        <h2 class="text-3xl font-bold text-gray-800 mb-2">Create Account</h2>
+        <p class="text-sm text-gray-500 mb-6">Sign up to start using PDF ToolKits</p>
+
+        <form action="${pageContext.request.contextPath}/register" method="post" class="w-full max-w-md">
+            <div class="mb-4">
+                <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
+                <input type="text" id="username" name="username" required
+                    class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none focus:border-blue-500 transition">
+                <p id="username-error" class="text-sm text-red-500 mt-1"></p>
+            </div>
+
+            <div class="mb-4">
+                <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                <input type="password" id="password" name="password" required
+                    class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none focus:border-blue-500 transition">
+                <p id="password-error" class="text-sm text-red-500 mt-1"></p>
+            </div>
+
+            <div class="mb-6">
+                <label for="confirmPassword" class="block text-sm font-medium text-gray-700">Confirm Password</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" required
+                    class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none focus:border-blue-500 transition">
+                <p id="confirm-password-error" class="text-sm text-red-500 mt-1"></p>
+            </div>
+
+            <button type="submit" id="submit-btn"
+                class="w-full bg-white text-gray-800 border border-gray-400 hover:bg-gray-800 hover:text-white font-semibold py-2 px-4 rounded-md shadow-sm transition duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-600">
+                Register
+            </button>
+        </form>
+
+        <p class="mt-4 text-sm text-gray-600">
+            Already have an account?
+            <a href="${pageContext.request.contextPath}/login" class="text-[#D39D55] hover:underline font-medium">
+                Log in
+            </a>
+        </p>
+    </div>
+</body>
+
+</html>

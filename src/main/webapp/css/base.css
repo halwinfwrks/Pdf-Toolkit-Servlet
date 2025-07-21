@@ -1,0 +1,72 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+/* Định nghĩa GeovaTrial-Medium */
+@font-face {
+  font-family: "GeovaTrial"; /* Đặt một tên chung cho tất cả các biến thể của font GeovaTrial */
+  src: url("../fonts/GeovaTrial-Medium.ttf") format("truetype");
+  font-weight: 500; /* Medium thường là 500 */
+  font-style: normal;
+}
+
+/* Định nghĩa GeovaTrial-Regular */
+@font-face {
+  font-family: "GeovaTrial";
+  src: url("../fonts/GeovaTrial-Regular.ttf") format("truetype");
+  font-weight: 400; /* Regular thường là 400 */
+  font-style: normal;
+}
+
+/* Định nghĩa GeovaTrial-SemiBold */
+@font-face {
+  font-family: "GeovaTrial";
+  src: url("../fonts/GeovaTrial-SemiBold.ttf") format("truetype");
+  font-weight: 600; /* SemiBold thường là 600 */
+  font-style: normal;
+}
+
+/* Định nghĩa GeovaTrial-Thin */
+@font-face {
+  font-family: "GeovaTrial";
+  src: url("../fonts/GeovaTrial-Thin.ttf") format("truetype");
+  font-weight: 100; /* Thin thường là 100 */
+  font-style: normal;
+}
+
+/* Định nghĩa GeovaTrial-Black */
+@font-face {
+  font-family: "GeovaTrial";
+  src: url("../fonts/GeovaTrial-Black.ttf") format("truetype");
+  font-weight: 900; /* Black thường là 900 */
+  font-style: normal;
+}
+
+/* Định nghĩa GeovaTrial-Bold */
+@font-face {
+  font-family: "GeovaTrial";
+  src: url("../fonts/GeovaTrial-Bold.ttf") format("truetype");
+  font-weight: 700; /* Bold thường là 700 */
+  font-style: normal;
+}
+
+/* Định nghĩa GeovaTrial-ExtraBold */
+@font-face {
+  font-family: "GeovaTrial";
+  src: url("../fonts/GeovaTrial-ExtraBold.ttf") format("truetype");
+  font-weight: 800;
+  font-style: normal;
+}
+
+/* Định nghĩa GeovaTrial-Light */
+@font-face {
+  font-family: "GeovaTrial";
+  src: url("../fonts/GeovaTrial-Light.ttf") format("truetype");
+  font-weight: 300; /* Light thường là 300 */
+  font-style: normal;
+}
+
+/* ====================================================================== */
+body {
+  font-family: "Poppins", sans-serif;
+}
+h1, h2, h3, h4, span{
+  font-family: "GeovaTrial", sans-serif !important;
+}
