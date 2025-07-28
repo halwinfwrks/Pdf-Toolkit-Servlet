@@ -14,7 +14,7 @@ import com.dev.model.Chunk;
 import com.dev.model.PdfFile;
 import com.dev.model.User;
 import com.dev.service.ChunkService;
-import com.dev.service.ExecuteFileService;
+import com.dev.service.PdfProcessingService;
 import com.dev.service.PdfService;
 import com.dev.service.UserService;
 import com.dev.util.JwtUtils;
@@ -36,7 +36,7 @@ public class UploadServlet extends HttpServlet {
     private static final UserService userService = UserService.getInstance();
     private static final PdfService pdfService = PdfService.getInstance();
     private static final ChunkService chunkService = ChunkService.getInstance();
-    private static final ExecuteFileService executeFileService = ExecuteFileService.getInstance();
+    private static final PdfProcessingService pdfProcessingService = PdfProcessingService.getInstance();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -92,7 +92,7 @@ public class UploadServlet extends HttpServlet {
                     Paths.get(pdfPart.getSubmittedFileName()).getFileName().toString(), ".pdf");
             pdfPart.write(tempFile.getAbsolutePath());
 
-            List<Chunk> chunks = executeFileService.splitPdfFileIntoChunks(tempFile.getAbsolutePath());
+            List<Chunk> chunks = pdfProcessingService.splitPdfFileIntoChunks(tempFile.getAbsolutePath());
 
             PdfFile pdfFile = createPdfFile(user, pdfPart, chunks.size());
             int fileId = pdfService.savePdf(pdfFile);

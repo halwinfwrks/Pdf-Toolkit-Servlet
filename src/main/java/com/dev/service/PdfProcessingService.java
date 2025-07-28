@@ -1,39 +1,55 @@
 package com.dev.service;
 
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
+import javax.imageio.ImageIO;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.rendering.ImageType;
+import org.apache.pdfbox.rendering.PDFRenderer;
 
 import com.dev.model.Chunk;
+import com.dev.model.PdfFile;
+import com.dev.model.User;
 import com.dev.util.RenderUltils;
 
-public class ExecuteFileService {
+import jakarta.servlet.http.Part;
 
-    private static final Logger logger = LogManager.getLogger(ExecuteFileService.class);
+public class PdfProcessingService {
+
+    private static final Logger logger = LogManager.getLogger(PdfProcessingService.class);
     private static final int CHUNK_SIZE = 2 * 1024 * 1024; // 2 MB
 
-    private static ExecuteFileService instance;
+    private static PdfProcessingService instance;
 
     private final ChunkService chunkService = ChunkService.getInstance();
+    private final PdfService pdfService = PdfService.getInstance();
     private final RenderUltils renderUltils = RenderUltils.getInstance();
 
-    private ExecuteFileService() {
+    private PdfProcessingService() {
     }
 
-    public static ExecuteFileService getInstance() {
+    public static PdfProcessingService getInstance() {
         if (instance == null) {
-            synchronized (ExecuteFileService.class) {
+            synchronized (PdfProcessingService.class) {
                 if (instance == null) {
-                    instance = new ExecuteFileService();
+                    instance = new PdfProcessingService();
                 }
             }
         }
@@ -165,5 +181,77 @@ public class ExecuteFileService {
             logger.error("Invalid Base64 data while merging chunks", e);
             return Optional.empty();
         }
+    }
+
+    public int uploadPdfFile(User user, String filePath) {
+        try {
+            List<Chunk> chunks = splitPdfFileIntoChunks(filePath);
+            PdfFile pdfFile = new PdfFile();
+            pdfFile.setName(Paths.get(filePath).getFileName().toString());
+            pdfFile.setUserId(user.getId());
+            pdfFile.setTotalChunk((long) chunks.size());
+            pdfFile.setTotalSize(new File(filePath).length());
+            pdfFile.setLastModified(new Date());
+
+            int fileId = pdfService.savePdf(pdfFile);
+            logger.info("PDF file saved with ID: {}", fileId);
+            for (Chunk chunk : chunks) {
+                chunk.setFileId(fileId);
+                chunkService.saveChunk(chunk);
+            }
+            return fileId;
+        } catch (Exception e) {
+            logger.error("Error uploading PDF file: {}", e.getMessage(), e);
+            return -1;
+        }
+    }
+
+    public List<String> loadPdfIntoImages(int fileId) {
+        Optional<PDDocument> optionalDocument = mergeChunksToPdfFile(fileId);
+        if (optionalDocument.isEmpty()) {
+            logger.error("Failed to load PDF document for file ID: {}", fileId);
+            return Collections.emptyList();
+        }
+        PDDocument document = optionalDocument.get();
+        List<String> result = Collections.synchronizedList(new ArrayList<>());
+        PDFRenderer renderer = new PDFRenderer(document);
+
+        // Tạo thread pool
+        int numberOfThreads = Runtime.getRuntime().availableProcessors();
+        ExecutorService executor = Executors.newFixedThreadPool(numberOfThreads);
+        List<Future<String>> futures = new ArrayList<>();
+
+        for (int page = 0; page < document.getNumberOfPages(); page++) {
+            final int currentPage = page;
+            Future<String> future = executor.submit(() -> {
+                try {
+                    BufferedImage image = renderer.renderImageWithDPI(currentPage, 150f, ImageType.RGB);
+                    try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+                        ImageIO.write(image, "jpeg", baos);
+                        byte[] imageBytes = baos.toByteArray();
+                        return renderUltils.encodeToBase64(imageBytes);
+                    }
+                } catch (IOException e) {
+                    logger.error("Error processing page {}: {}", currentPage, e.getMessage(), e);
+                    return null;
+                }
+            });
+            futures.add(future);
+        }
+
+        // Thu thập kết quả
+        for (Future<String> future : futures) {
+            try {
+                String base64Image = future.get();
+                if (base64Image != null) {
+                    result.add(base64Image);
+                }
+            } catch (Exception e) {
+                logger.error("Error getting future result: {}", e.getMessage(), e);
+            }
+        }
+
+        executor.shutdown();
+        return result;
     }
 }
