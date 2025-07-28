@@ -71,12 +71,6 @@ public class JwtUtils {
                 .map(claims -> claims.get("username", String.class));
     }
 
-    // Get userId from token
-    public static Optional<Long> getUserIdFromJwt(String jwt) {
-        return parseJwt(jwt)
-                .map(claims -> claims.get("userId", Long.class));
-    }
-
     // Validate token + user
     public static boolean isJwtValid(String jwt) {
         return parseJwt(jwt)

@@ -2,18 +2,18 @@ package com.dev.model;
 
 import java.util.Date;
 
-public class FileInfo {
+public class PdfFile {
     private int id;
     private int userId;
     private String name;
-    private String totalSize;
-    private String totalChunk;
+    private Long totalSize;
+    private Long totalChunk;
     private Date lastModified;
 
-    public FileInfo() {
+    public PdfFile() {
     }
 
-    public FileInfo(int userId, String name, String totalSize, String totalChunk, Date lastModified) {
+    public PdfFile(int userId, String name, Long totalSize, Long totalChunk, Date lastModified) {
         this.userId = userId;
         this.name = name;
         this.totalSize = totalSize;
@@ -21,7 +21,7 @@ public class FileInfo {
         this.lastModified = lastModified;
     }
 
-    public FileInfo(int id, int userId, String name, String totalSize, String totalChunk, Date lastModified) {
+    public PdfFile(int id, int userId, String name, Long totalSize, Long totalChunk, Date lastModified) {
         this.id = id;
         this.userId = userId;
         this.name = name;
@@ -46,19 +46,19 @@ public class FileInfo {
         this.name = name;
     }
 
-    public String getTotalSize() {
+    public Long getTotalSize() {
         return totalSize;
     }
 
-    public void setTotalSize(String totalSize) {
+    public void setTotalSize(Long totalSize) {
         this.totalSize = totalSize;
     }
 
-    public String getTotalChunk() {
+    public Long getTotalChunk() {
         return totalChunk;
     }
 
-    public void setTotalChunk(String totalChunk) {
+    public void setTotalChunk(Long totalChunk) {
         this.totalChunk = totalChunk;
     }
 

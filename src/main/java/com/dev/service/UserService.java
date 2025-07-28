@@ -26,6 +26,12 @@ public class UserService {
         return Optional.ofNullable(userDao.findById(id));
     }
 
+    public Optional<User> findUserByUsername(String username) {
+        return userDao.findAll().stream()
+                .filter(user -> user.getUsername().equalsIgnoreCase(username))
+                .findFirst();
+    }
+
     public void updateUser(User user) {
         userDao.update(user);
     }

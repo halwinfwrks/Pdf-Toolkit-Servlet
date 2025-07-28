@@ -10,6 +10,8 @@
 </head>
 
 <body>
+    <!-- import navbar -->
+    <jsp:include page="navbar.jsp" />
     <c:if test="${not empty jwtToken}">
         <div class="error-message">
             <p>${jwtToken}</p>
